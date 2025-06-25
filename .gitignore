@@ -1,0 +1,53 @@
+# ===== General =====
+*.class
+*.log
+*.DS_Store
+*.exe
+*.out
+*.o
+*.pyc
+*.tmp
+*.bak
+
+# ===== Java =====
+*.class
+*.jar
+*.war
+*.ear
+hs_err_pid*
+
+# ===== IntelliJ IDEA =====
+.idea/
+*.iml
+out/
+
+# ===== VS Code =====
+.vscode/
+*.code-workspace
+
+# ===== OS-specific =====
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# ===== Git =====
+*.orig
+
+# ===== Node/JS (in case you ever build JS projects) =====
+node_modules/
+npm-debug.log
+
+# ===== Python (if needed for ML later) =====
+__pycache__/
+*.py[cod]
+*.ipynb_checkpoints
+
+# ===== Folder marker =====
+!.gitkeep
