@@ -1,0 +1,7 @@
+# leetcode problem 709
+***not that important*** 
+
+## some important points to leran:
+-  A se a karna h to 32 add kar do 
+- for(char c: s.toCharArray())
+            if(c>=65 && c<=90) s1+=(char)(c+32);
