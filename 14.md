@@ -1,0 +1,120 @@
+# leetcode problem 14
+***good one***
+
+***https://leetcode.com/problems/longest-common-prefix/description/***
+
+
+## some important points to leran:
+1.  if (strs[i].startsWith( ans) == false )
+ 
+   -   kya is se start hota hai
+
+
+2.  if (strs == null || strs.length == 0) {
+            return "";
+        }
+
+3. see 
+
+- Inside loops      `then`      StringBuilder 
+-  When immutability needed    `then`     String
+-  For fast concat, reverse, edits  `then` StringBuilder
+
+4. a new solution came 
+ - ```class Node{
+    Node[] arr=new Node[26];
+    int c;
+    Node() {
+        Arrays.fill(arr,null);
+        c=0;
+   }
+   }
+   class Trie{
+    Node root;
+    Trie() {
+        root = new Node();
+    }
+    public void insert(String s) {
+        Node node = root;
+        for(char ch:s.toCharArray()) {
+            if(node.arr[ch-'a']==null) {
+                node.arr[ch-'a'] = new Node();
+            }
+            node = node.arr[ch-'a'];
+            node.c++;
+        }
+    }
+    public String search(String s, int n){
+        Node node = root;
+        StringBuilder sb = new StringBuilder();
+        for(char ch:s.toCharArray()) {
+            if(node.arr[ch-'a'].c!=n) {
+                return sb.toString();
+            }
+            node = node.arr[ch-'a'];
+            sb.append(ch);
+        }
+        return sb.toString();
+    }
+   }
+   class Solution {
+    public String longestCommonPrefix(String[] strs) {
+        Trie trie = new Trie();
+        for(String s: strs) {
+            trie.insert(s);
+        }
+        String res = trie.search(strs[0],strs.length);
+        return res;
+    }
+    }
+
+5. 5️ Search logic
+  Hum pehli string ke letters follow karte hain.
+
+    Jab tak count == total strings hota hai → prefix common hai.
+
+    Jaise hi count chhota hota hai → stop.
+
+  - Example:
+
+   - 'f' → count 3 ✅
+   - 'l' → count 3 ✅
+   - 'o' → count 2 ❌ (break)
+
+   - Result = "fl"
+
+
+
+
+6. if (strs == null || strs.length == 0)
+   -  return "";
+
+
+7. while (!strs[i].startsWith(prefix)) 
+ ```
+8. 
+    class Solution {
+    public String longestCommonPrefix(String[] strs) {
+        if(strs == null|| strs.length == 0)
+        return "";
+        String prefix = strs[0];
+        for(int i = 1;i < strs.length;i++){
+            while (!strs[i].startsWith(prefix)){
+                prefix= prefix.substring(0, prefix.length() -1);
+                if(prefix.isEmpty()){
+                    return "";
+                }
+            }
+        }
+        return prefix;
+        
+    }
+    }
+```
+```
+9. String resultString = "", tempString;
+```
+```
+10. char ch = '8';
+int num = Character.getNumericValue(ch); // num = 8
+```

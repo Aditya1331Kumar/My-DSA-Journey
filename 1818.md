@@ -1,0 +1,288 @@
+# leetcode problem 1818
+
+***very very good one***
+---
+****** 
+---
+
+## some important points to leran:
+
+---
+
+1.The wrong solution :
+```
+class Solution {
+    public int minAbsoluteSumDiff(int[] nums1, int[] nums2) {
+        
+        int l = nums2.length;
+        int maxdiff=0 ;
+        int index =0;
+        for (int i = 0; i < l; i++) {
+            int diff = Math.abs(nums1[i]-nums2[i]);
+            if (diff>maxdiff) {
+                maxdiff=diff;
+                index=i;
+            }
+
+        }
+        int apnemeindiff = Integer.MAX_VALUE;
+        int currentdiff = 0;
+        int index2=0;
+        for (int i = 0; i < l; i++) {
+            currentdiff=Math.abs(nums1[i]-nums2[index]);
+            if (currentdiff<apnemeindiff) {
+                apnemeindiff=currentdiff;
+index2=i;
+            }
+        }
+        nums1[index]=nums1[index2];
+        int sum = 0;
+        for (int i = 0; i < l; i++) {
+
+            sum = sum+Math.abs(nums1[i]-nums2[i]);
+        }
+        return sum;
+    }
+}
+```
+---
+---
+```
+2. import java.util.Arrays;
+
+class Solution {
+    public int minAbsoluteSumDiff(int[] nums1, int[] nums2) {
+        int n = nums1.length;
+        final int MOD = 1_000_000_007;
+
+        // sorted copy of nums1 for binary-searching closest value
+        int[] sorted = Arrays.copyOf(nums1, n);
+        Arrays.sort(sorted);
+
+        long total = 0;      // total original sum of absolute differences (modded later)
+        long maxGain = 0;    // best improvement (how much we can reduce the total by one replacement)
+
+        for (int i = 0; i < n; i++) {
+            int a = nums1[i];
+            int b = nums2[i];
+            int oldDiff = Math.abs(a - b);
+            total = (total + oldDiff) % MOD;
+
+            // find closest value to b in sorted (binary search)
+            int idx = Arrays.binarySearch(sorted, b);
+            int bestNewDiff = Integer.MAX_VALUE;
+
+            if (idx >= 0) {
+                // exact match found: we can make newDiff = 0
+                bestNewDiff = 0;
+            } else {
+                // not found: insertion point = -(idx + 1)
+                int ins = -idx - 1;
+                if (ins < n) bestNewDiff = Math.min(bestNewDiff, Math.abs(sorted[ins] - b));
+                if (ins - 1 >= 0) bestNewDiff = Math.min(bestNewDiff, Math.abs(sorted[ins - 1] - b));
+            }
+
+            long gain = (long) oldDiff - (long) bestNewDiff; // how much this position could improve
+            if (gain > maxGain) maxGain = gain;
+        }
+
+        long ans = (total - maxGain + MOD) % MOD;
+        return (int) ans;
+    }
+}
+
+```
+---
+---
+
+3. final int MOD = 1_000_000_007;
+```
+
+ye bas ek prime and large number hai 
+remainder le lenge mod se to Agar total bahut bada ho bhi jaye, mod lete hi wo [0, MOD-1] range me chala jaata hai.
+```
+---
+---
+
+4.int[ ] sorted = Arrays.copyOf(nums1, n);
+```
+Kya karega: nums1 ka ek copy banata hai taki hum original nums1 ko modify na karein.
+```
+```
+int n = nums1.length;
+int[] sorted = Arrays.copyOf(nums1, n);
+```
+---
+---
+```
+5. long isliye use kiya kyunki large inputs pe integer overflow ho sakta hai.
+
+
+```
+---
+---
+
+6. int idx = Arrays.binarySearch(sorted, b);
+```
+int[] arr = {2, 4, 6, 8};
+Arrays.binarySearch(arr, 6); // returns 2  (value found at index 2)
+```
+```
+Arrays.binarySearch(arr, 5); // returns -3 (not found, insert at index 2 => -(2+1))
+
+```
+---
+---
+
+7.  3rd solution
+```
+class Solution {
+  String problem = """
+You are given two positive integer arrays nums1 and nums2, both of length n.
+The absolute sum difference of arrays nums1 and nums2 is defined as the sum of |nums1[i] - nums2[i]| for each 0 <= i < n (0-indexed).
+You can replace at most one element of nums1 with any other element in nums1 to minimize the absolute sum difference.
+Return the minimum absolute sum difference after replacing at most one element in the array nums1. Since the answer may be large, return it modulo 10^9 + 7.
+|x| is defined as:
+  x if x >= 0, or
+  -x if x < 0.
+Constraints:
+  n == nums1.length
+  n == nums2.length
+  1 <= n <= 10^5
+  1 <= nums1[i], nums2[i] <= 10^5
+""";
+
+  String explanation = """
+=> binary search -> bucket sort for indexes of nums2, two pointers for nums1
+""";
+
+  public int minAbsoluteSumDiff(int[] nums1, int[] nums2) {
+    return _minAbsoluteSumDiff(nums1, nums2);
+  }
+
+  private int _minAbsoluteSumDiff(int[] nums1, int[] nums2) {
+    int n = nums1.length, limit = (int) 1e5 + 1;
+
+    boolean[] existed_nums1 = new boolean[limit];
+    for (int num : nums1)
+      existed_nums1[num] = true;
+
+    ArrayList<Integer>[] num2_indexes = new ArrayList[limit];
+    for (int i = 0; i < nums2.length; i++) {
+      if (num2_indexes[nums2[i]] == null)
+        num2_indexes[nums2[i]] = new ArrayList<>();
+      num2_indexes[nums2[i]].add(i);
+    }
+
+    long diff_sum = 0;
+    long[] diffs = new long[n];
+    for (int i = 0; i < n; i++) {
+      diffs[i] = Math.abs(nums1[i] - nums2[i]);
+      diff_sum += diffs[i];
+    }
+
+    long min_diff_sum = diff_sum;
+    int left_num1 = 0, right_num1 = 0;
+    for (int num1 = 0; num1 < limit; num1++) {
+      if (existed_nums1[num1]) {
+        left_num1 = num1;
+        right_num1 = num1;
+        break;
+      }
+    }
+    for (int num2 = 1; num2 < limit; num2++) {
+      if (num2_indexes[num2] == null)
+        continue;
+
+      // get max left num1
+      for (int num1 = left_num1; num1 <= num2; num1++) {
+        if (!existed_nums1[num1])
+          continue;
+        left_num1 = num1;
+      }
+
+      // get min right num1
+      for (int num1 = right_num1; num1 < limit; num1++) {
+        if (!existed_nums1[num1])
+          continue;
+        right_num1 = num1;
+        if (right_num1 >= num2)
+          break;
+      }
+
+      int new_diff = Math.min(Math.abs(num2 - left_num1), Math.abs(num2 - right_num1));
+      for (int i : num2_indexes[num2]) {
+        if (new_diff < diffs[i]) {
+          long new_diff_sum = diff_sum - diffs[i] + new_diff;
+          if (new_diff_sum < min_diff_sum)
+            min_diff_sum = new_diff_sum;
+        }
+      }
+    }
+
+    return (int) (min_diff_sum % ((int) 1e9 + 7));
+  }
+}
+```
+---
+---
+
+8. 4rth solution 
+
+```
+import static java.lang.Math.abs;
+
+import java.util.Comparator;
+import java.util.Map.Entry;
+import java.util.TreeMap;
+
+class Solution {
+
+  public int minAbsoluteSumDiff(int[] nums1, int[] nums2) {
+        boolean[] countingNums1 = new boolean[100001];
+        int[] diffNums2 = new int[100001];
+        
+        long absoluteSumDiff = 0;
+        for (int i = 0; i < nums1.length; i++) {
+            int absoluteDiff = Math.abs(nums1[i]-nums2[i]);
+            countingNums1[nums1[i]] = true;
+            diffNums2[nums2[i]] = Math.max(absoluteDiff, diffNums2[nums2[i]]);
+            absoluteSumDiff += absoluteDiff;
+        }
+        
+        int num1 = -100000;
+        int num2 = -100000;
+        int diff = 0;
+        int maxProfit = 0;
+        for (int num = 1; num < 100001; num++) {
+            if (countingNums1[num]) {
+                maxProfit = Math.max(diff - num + num2, maxProfit);
+                num1 = num;
+            }
+            
+            if (diffNums2[num] > 0) {
+                maxProfit = Math.max(diffNums2[num] - num + num1, maxProfit);
+                if (diff - num + num2 < diffNums2[num]) {
+                    diff = diffNums2[num];
+                    num2 = num;
+                }
+            }
+        }
+        
+        return (int)((absoluteSumDiff - maxProfit) % 1_000_000_007);
+    }
+
+}
+```
+---
+
+---
+```
+9.
+```
+---
+---
+```
+10.
+```
+---
